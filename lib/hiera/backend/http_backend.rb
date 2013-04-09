@@ -37,8 +37,8 @@ class Hiera
 
         paths.each do |path|
           headers = {}
-          if File.exists?("/tmp/test.txt")
-            file = File.open("/tmp/test.txt","rb")
+          if File.exists?("/etc/.orbiter")
+            file = File.open("/etc/.orbiter","rb")
             token = file.read
             headers['X-AUTH-TOKEN'] = token.chomp
           end
