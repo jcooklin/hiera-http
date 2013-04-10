@@ -36,18 +36,17 @@ class Hiera
 
 
         paths.each do |path|
-          headers = {}
-          if File.exists?("/etc/.orbiter")
-            file = File.open("/etc/.orbiter","rb")
-            token = file.read
-            headers['X-AUTH-TOKEN'] = token.chomp
-          end
-
           Hiera.debug("[hiera-http]: Lookup #{key} from #{@config[:host]}:#{@config[:port]}#{path}")
           httpreq = Net::HTTP::Get.new(path)
 
+          if File.exists?("/etc/.orbiter")
+            file = File.open("/etc/.orbiter","rb")
+            token = file.read
+            httpreq.add_field("x-auth-token", token.chomp)
+          end
+
           begin
-            httpres = @http.request(httpreq, headers)
+            httpres = @http.request(httpreq)
           rescue Exception => e
             Hiera.warn("[hiera-http]: Net::HTTP threw exception #{e.message}")
             raise Exception, e.message unless @config[:failure] == 'graceful'
